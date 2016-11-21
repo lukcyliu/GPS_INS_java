@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/Config.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/EngineINS.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/IOAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/MainTest.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/tools/MadgwickAHRS.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/tools/NewKalmanFilter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/tools/RotateMatrix.java" charset="UTF-8" />
+  </component>
+</project>
