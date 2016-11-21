@@ -9,7 +9,7 @@ public class Config {
 
     // 设置文件路径和文件名（无后缀）
     public static final String DIR = "C:\\Users\\Administrator\\Desktop\\TestSensorData\\sensordata1121\\";
-    public static final String FILE_NAME = "IMU1479464814533_1";
+    public static final String FILE_NAME = "IMU1479464814533_2";
     public static final String GPS_FILE_NAME = "GPS1479464814533_1";
 
     // IMU和手机采集的数据格式不同
