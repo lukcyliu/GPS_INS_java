@@ -8,8 +8,9 @@ import java.util.Scanner;
 import Jama.Matrix;
 import tools.*;
 
-public class MainTest {
-
+public class
+MainTest {
+    //git测试
     private static MadgwickAHRS madgwickAHRS;
     private static MahonyAHRS mahonyAHRS;
     private static Matrix madgwickR;
