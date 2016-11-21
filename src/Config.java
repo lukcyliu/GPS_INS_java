@@ -7,7 +7,7 @@ import tools.Velocity;
 
 public class Config {
 
-    //test
+    //
     // 设置文件路径和文件名（无后缀）
     public static final String DIR = "C:\\Users\\Administrator\\Desktop\\TestSensorData\\sensordata1121\\";
     public static final String FILE_NAME = "IMU1479464814533_2";
