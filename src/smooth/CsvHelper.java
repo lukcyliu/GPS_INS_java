@@ -11,9 +11,9 @@ public class CsvHelper {
     BufferedWriter smoothWriter;
     OutputStreamWriter outputStreamWriter;
     int cnt=0;
-    static final String DIR = "C:\\Users\\lukcy\\Desktop\\惯导测试数据\\0713data跑车_北邮\\";
-    static final String inputFilename= "跑车测试_惯导.csv";
-    static final String outputFilename="滑动窗口处理_惯导.csv";
+    static final String DIR = "C:\\Users\\lukcy\\Desktop\\惯导测试数据\\0828跑车\\";
+    static final String inputFilename= "8.28滑动滤波输入.csv";
+    static final String outputFilename="8.28滑动滤波输出.csv";
     public ArrayList<double[]> read(int n){
         ArrayList<double[]> data = new ArrayList<double[]>();
         try{
@@ -26,6 +26,7 @@ public class CsvHelper {
                     lineSplittoDouble[i] = Double.parseDouble(lineSplit[i]);
                 data.add(lineSplittoDouble);
             }
+
             br.close();
         }catch (FileNotFoundException e){
             e.printStackTrace();
@@ -39,7 +40,7 @@ public class CsvHelper {
         if(smoothWriter == null)
             return;
         try{
-           smoothWriter.write(output);
+            smoothWriter.write(output);
             smoothWriter.flush();
             System.out.println(cnt+++"writing");
         }catch (IOException e){
