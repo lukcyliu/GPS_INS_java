@@ -21,6 +21,7 @@ public class SmoothTest {
     double[][] gps = new double[2][width];
 
 
+
     static Matrix mahonyR;
 
     //循环队列滑动滤波算法测试
@@ -96,40 +97,58 @@ public class SmoothTest {
     }
     public static void main(String[] args) {
         double Px=0,Py=0;
+        //acc高通低通滤波
+        double acc_mod = 0,acc_low = 0,acc_high = 0;
+        double low_value = 0.1;
 
         double deltaVy=0,lastAy=0,hx=0,hy=0,hAy=0,hAx=0,hVy=0,hVx=0,hSx=0,hSy=0,hV2=0,hS2=0,hSy2=0,hSx2=0,lasthA2=0,lasthV2=0;
         double lasthAy=0,lasthAx=0,lastlastAy=0,lastlastAx=0,lasthVy=0,lasthVx=0,lastlastVy=0,lastlastVx=0;
         double lastpVx=0,lastpVy=0;
+        double yaw=90;
         int count=0;
         SmoothTest smoothTest = new SmoothTest();
         //io read csv.
         CsvHelper csvHelper = new CsvHelper();
         csvHelper.creatOutputFile();
-        csvHelper.write("smoothAx"+","+"smoothAy"+","+"smoothAz"+","+
+        csvHelper.write("smoothAx"+","+"smoothAy"+","+"smoothAz,acc_mod"+","+
                 "smoothGx"+","+"smoothGy"+","+"smoothGz"+","+
                 "smoothMx"+","+"smoothMy"+","+"smoothMz"+","+
                 "smoothGPSYaw"+","+"smoothGPSv"+","+"GPSVe"+","+"GPSVn"+","+"Px"+","+"Py"+","+"slideYaw"+","+"yaw"+","+"hx"+","+"hy"+","+"hAx,hAy,hVx,hVy,hSx,hSy,hSx2,hSxy2"+"\n");
-        ArrayList<double[]> input = csvHelper.read(11);
+        ArrayList<double[]> input = csvHelper.read(20);
         System.out.println(input.size());
-        double[] data = new double[11];
+        double[] data = new double[20];
         ArrayList<double[][]> smoothRes;
-        double ax,ay,az,gx,gy,gz,mx,my,mz,GPSYaw,GPSv;
+        double ax,ay,az,gx,gy,gz,mx,my,mz,jyYaw,GPSYaw=0,GPSv=0,GPSLongitude,GPSLattitude,GPSHeight,GPS_SN;
+        double[] q = new double[4];
         double smoothAx=0,smoothAy=0,smoothAz=0,smoothGx=0,smoothGy=0,smoothGz=0,smoothMx=0,smoothMy=0,smoothMz=0,smoothGPSYaw=0,smoothGPSv=0;
         double GPSVn = 0,GPSVe = 0;
+        double last_L = 0,last_lamb = 0, last_h = 0;
+        int firstGPSVcc_in = 0;
+        double speedE,speedN,speedH;
+        double pre_lamb,pre_L,pre_h;
+
         //滑动滤波
         for (int i = 0; i < input.size(); i++){
             data = input.get(i);
             ax = data[0] - accCalErr_X; ay = data[1] - accCalErr_Y; az = data[2] -accCalErr_Z;
             gx = data[3]; gy = data[4]; gz = data[5];
             mx = data[6]; my = data[7]; mz = data[8];
-            GPSYaw = data[9]; GPSv = data[10];
-
+            q[0] = data[9]; q[1] = data[10];q[2] = data[11];q[3] = data[12];
+            jyYaw = data[13];
+            GPSLongitude = data[14];GPSLattitude = data[15];GPSHeight = data[16];
+            GPSYaw = data[17];GPSv = data[18];GPS_SN = data[19];
+            //设置低通高通滤波器，剥离重力分量得到静止检测算子
+            acc_mod = Math.sqrt(ax*ax + ay*ay + az*az);
+            //低通滤波提出重力分量影响
+            acc_low = acc_mod * low_value + (1 - low_value) * acc_low;
+            //高通滤波剥离重力分量
+            acc_high = acc_mod - acc_low;
 //            if(GPSYaw > 180)
 //                GPSYaw -= 360;
 //            else if (GPSYaw < -180)
 //                GPSYaw += 360;
             //循环队列方法
-            double slideYaw = smoothTest.slideFilter(GPSYaw);
+            double slidejyYaw = smoothTest.slideFilter(jyYaw);
             //暴力方法
             smoothRes = smoothTest.slideWindows(ax,ay,az,gx,gy,gz,mx,my,mz,GPSYaw,GPSv);
             for(int j = 0; j < smoothTest.width; ++j) {
@@ -160,20 +179,41 @@ public class SmoothTest {
             GPSVn = smoothGPSv * Math.cos(smoothGPSYaw * 3.1415926 / 180) / 3.6;
             GPSVe = smoothGPSv * Math.sin(smoothGPSYaw * 3.1415926 / 180) / 3.6;
 
+            if(GPS_SN >= 4){
+                if(GPSLattitude == last_L && GPSLongitude == last_lamb){
+                    System.out.println("---------------------------------------session 1");
+                    if(firstGPSVcc_in == 0){
+                        pre_lamb = 0;
+                        pre_L = 0;
+                        pre_h = 0;
+                        speedE = GPSv * Math.cos(GPSYaw);
+                        speedN = GPSv * Math.sin(GPSYaw);
+                        speedH = GPSHeight - last_h;
+                        System.out.println("---------------------------------------session 1_1");
+                    }
+                    firstGPSVcc_in = 1;
+
+                }
+
+            }
 
             //用求得的分加速度进行最小二乘训练以及积分两种方式的测试
-            //旋转矩阵积分法
-            updateRMatrix((float)smoothAx,(float)smoothAy,(float)smoothAz,(float)smoothGx,(float)smoothGy,(float)smoothGz);
+            //旋转矩阵积分法,前左上
+            updateRMatrix((float)smoothAy,(float)-smoothAx,-(float)smoothAz,(float)smoothGx,(float)smoothGy,(float)smoothGz);
+//           //右前上
+//            updateRMatrix((float)smoothAx,(float)smoothAy,-(float)smoothAz,(float)smoothGx,(float)smoothGy,(float)smoothGz);
             Matrix acceMatrix = transWithRMatrix(mahonyR,smoothAx,smoothAy,smoothAz);
             Px += 0.5*(GPSVe + lastpVx)*0.2;
             Py += 0.5*(GPSVn + lastpVy)*0.2;
             lastpVx = GPSVe;
             lastpVy = GPSVn;
 
+            mahonyR = mahonyR.transpose();
             //在旋转矩阵Cbn中提出欧拉角（弧度）
             double pitch = Math.asin(mahonyR.get(2,1));
             double roll  = Math.atan(-mahonyR.get(0,1) / mahonyR.get(1,1));
-            double yaw   = Math.atan(-mahonyR.get(2,0) / mahonyR.get(2,2));
+              yaw   += Math.atan(-mahonyR.get(0,1) / mahonyR.get(1,1))*180/3.1416 /50;
+
 //            yaw = smoothTest.slideFilter(yaw);
 
             //航位推算法
@@ -181,8 +221,11 @@ public class SmoothTest {
             hx += GPSVe * 0.2;
             hy += GPSVn * 0.2;
            //2.1将汽车前进y轴加速度分解并梯形积分到东北向速度
+//            if(Math.abs(acc_high) < 0.05 || Math.abs(acc_high) > 0.5)
+//                smoothAy = 0;
             hAx = 9.8015 * smoothAy * Math.sin(smoothGPSYaw * 3.1415926 / 180);
             hAy = 9.8015 * smoothAy * Math.cos(smoothGPSYaw * 3.1415926 / 180);
+
             //梯形积分
 //            hVx += 0.5 * (hAx + lasthAx) * 0.2;
 //            hVy += 0.5 * (hAy + lasthAy) * 0.2;
@@ -200,18 +243,18 @@ public class SmoothTest {
             lasthVx = hVx;
             lasthVy = hVy;
             //2.2若先积分出全部的位移，再乘上航向角
-            hV2 += 0.5 * (lasthA2 + smoothAy) * 0.2;
-            if(Math.abs(smoothAy) < 0.03) hV2 = 0;
+            hV2 += 0.5 * (lasthA2 + smoothAy)* 9.8015 * 0.2;
+//            if(Math.abs(acc_high) < 0.05 || Math.abs(acc_high) > 0.6) hV2=0;
             hS2 += 0.5 * (lasthV2 + hV2) * 0.2;
             hSx2 = hS2 * Math.sin(smoothGPSYaw * 3.1415926 / 180);
             hSy2 = hS2 * Math.cos(smoothGPSYaw * 3.1415926 / 180);
             lasthA2 = smoothAy;
             lasthV2 = hV2;
 
-            csvHelper.write(smoothAx+","+smoothAy+","+smoothAz+","+
+            csvHelper.write(smoothAx+","+smoothAy+","+smoothAz+","+acc_high+","+
                                     smoothGx+","+smoothGy+","+smoothGz+","+
                                     smoothMx+","+smoothMy+","+smoothMz+","+
-                                    smoothGPSYaw+","+smoothGPSv+","+GPSVe+","+GPSVn+","+Px+","+(Py)+","+slideYaw+","+yaw*180/3.1416+","+hx+","+hy+
+                                    smoothGPSYaw+","+smoothGPSv+","+GPSVe+","+GPSVn+","+Px+","+(Py)+","+slidejyYaw+","+yaw+","+hx+","+hy+
                     ","+hAx+","+hAy+","+hVx+","+hVy+","+hSx+","+hSy+","+hSx2+","+hSy2+","+hV2+","+hS2+"\n");
 //            System.out.println((count++)+"smoothAcc = "+(float)smoothAx+" "+(float)smoothAy+" "+(float)smoothAz+" ; "+
 //                                "smoothGyo = "+(float)smoothGx+" "+(float)smoothGy+" "+(float)smoothGz+" ; "+
@@ -225,7 +268,7 @@ public class SmoothTest {
 
     // 通过四元数构造转换矩阵R，然后acc = R · acc完成转换。
     private static void updateRMatrix(float aX, float aY, float aZ, float gX, float gY, float gZ) {
-        MahonyAHRS  mahonyAHRS = new MahonyAHRS((float)0.1);
+        MahonyAHRS  mahonyAHRS = new MahonyAHRS((float)0.2,(float)2,(float)0.05);
         mahonyAHRS.update(gX, gY, gZ, aX, aY, aZ);
 
         float[] q2 = mahonyAHRS.Quaternion;        // 四元数
@@ -240,7 +283,7 @@ public class SmoothTest {
         double q1q2 = q2[1] * q2[2];
         double q1q3 = q2[1] * q2[3];
         double q2q3 = q2[2] * q2[3];
-
+        //定义Cnb
         mahonyR = new Matrix(3, 3);
         mahonyR.set(0, 0, q0q0 + q1q1 - q2q2 - q3q3);
         mahonyR.set(0, 1, 2 * (q1q2 - q0q3));

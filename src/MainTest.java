@@ -35,7 +35,7 @@ MainTest {
     @SuppressWarnings({"unused", "unchecked"})
     public static void main(String[] args) {
 
-        Scanner in = new Scanner(System.in);
+
         IOAdapter.createOutputFile();
         NewKalmanFilter kalmanFilter = new NewKalmanFilter();
 
@@ -213,7 +213,6 @@ MainTest {
         //计算位移
 //        EngineINS.addCalibratedVelocity(SampleVx, SampleVy, SampleVz);
         IOAdapter.output();
-        in.close();
     }
 
     // 通过四元数构造转换矩阵R，然后acc = R · acc完成转换。
