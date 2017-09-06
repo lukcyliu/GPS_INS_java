@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="6f29282b-ba39-401a-b39e-cc4970bd2a35" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MainTest.java" afterPath="$PROJECT_DIR$/src/MainTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/smooth/SmoothTest.java" afterPath="$PROJECT_DIR$/src/smooth/SmoothTest.java" />
     </list>
     <ignored path="GPS_INS2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -632,7 +630,7 @@
       <workItem from="1504230926180" duration="12215000" />
       <workItem from="1504490975916" duration="8692000" />
       <workItem from="1504580190302" duration="1806000" />
-      <workItem from="1504681745764" duration="7345000" />
+      <workItem from="1504681745764" duration="7449000" />
     </task>
     <task id="LOCAL-00001" summary="滑动滤波1.0">
       <created>1500256610085</created>
@@ -648,11 +646,18 @@
       <option name="project" value="LOCAL" />
       <updated>1504491018467</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="滑动滤波2.0">
+      <created>1504692991634</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1504692991634</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="93532000" />
+    <option name="totallyTimeSpent" value="93636000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -709,7 +714,8 @@
     </ignored-roots>
     <MESSAGE value="测试" />
     <MESSAGE value="滑动滤波1.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="滑动滤波1.0" />
+    <MESSAGE value="滑动滤波2.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="滑动滤波2.0" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
