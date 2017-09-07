@@ -11,6 +11,9 @@ public class CsvHelper {
     BufferedWriter smoothWriter;
     OutputStreamWriter outputStreamWriter;
     int cnt=0;
+//    static final String DIR = "C:\\Users\\lukcy\\Desktop\\惯导测试数据\\9.4跑车\\";
+//    static final String inputFilename= "9.4跑车仿真输入.csv";
+//    static final String outputFilename="9.4跑车仿真输出.csv";
     static final String DIR = "C:\\Users\\lukcy\\Desktop\\惯导测试数据\\0828跑车\\";
     static final String inputFilename= "8.28滑动滤波输入.csv";
     static final String outputFilename="8.28滑动滤波输出.csv";
