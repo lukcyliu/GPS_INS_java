@@ -1,21 +1,19 @@
 package smooth;
 
 import Jama.Matrix;
-import javafx.geometry.Pos;
-import tools.Acceleration;
 import tools.MahonyAHRS;
 import tools.Position;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 
 /**
- * Created by lukcy on 2017/7/14.
+ * Created by lukcy on 2017/9/18.
  */
-public class SmoothTest {
+public class INSTest {
     int firstSmooth = 0;
     int width = 12;
-    static double accCalErr_X = -0.09692, accCalErr_Y = 0.081208, accCalErr_Z = 0.014632;
+    static double accCalErr_X = -0.09092, accCalErr_Y = 0.081208, accCalErr_Z = 0.015632;
     double[][] acc = new double[3][width];
     double[][] gyo = new double[3][width];
     double[][] mag = new double[3][width];
@@ -25,6 +23,8 @@ public class SmoothTest {
     static MahonyAHRS mahonyAHRS;
     static Matrix mahonyR;
     static Matrix jyR;
+    static double deg2rad = 3.1415926 / 180;
+    static double rad2deg = 180 / 3.1415926;
 
     //循环队列滑动滤波算法测试
     double[] value_buf = new double[width];
@@ -92,9 +92,6 @@ public class SmoothTest {
         return queue;
     }
 
-    public void display() {
-
-    }
 
     public static void main(String[] args) {
 
@@ -121,7 +118,7 @@ public class SmoothTest {
         double[] data = new double[20];
         ArrayList<double[][]> smoothRes;
         double ax, ay, az, gx, gy, gz, mx, my, mz, jyYaw, GPSYaw = 0, GPSv = 0, GPSLongitude, GPSLattitude, GPSHeight, GPS_SN;
-        double[] q = new double[4];
+        float[] q = new float[4];
         double smoothAx = 0, smoothAy = 0, smoothAz = 0, smoothGx = 0, smoothGy = 0, smoothGz = 0, smoothMx = 0, smoothMy = 0, smoothMz = 0, smoothGPSYaw = 0, smoothGPSv = 0;
         double GPSVn = 0, GPSVe = 0;
 
@@ -140,8 +137,37 @@ public class SmoothTest {
         Position AddS = new Position();
         int insCnt=0;
         double Pitch0 = 0,Roll0 = 0,Yaw0 = 0;
+        double Pitch = 0,Roll = 0,Yaw = 0;
+        double firstPitch = 0,firstRoll = 0,firstYaw = 0;
+        float[] eInt = {0,0,0};
+        //Re长半轴 r短半轴 f椭球扁率 e椭球偏心率 wie地球自转角速率
+        double earthRe=6378137,earthr=6356752.3142,earthf=1/298.257,earthe=0.0818,earthwie=7.292e-5;
+        double G0 = 9.8015;
+        //初始化定姿
+        double[] data0 = input.get(0);
+        ax = -(data0[0] -accCalErr_X);
+        ay = -(data0[1] -accCalErr_Y);
+        az = -(data0[2] -accCalErr_Z);
+        gx = data0[3];
+        gy = data0[4];
+        gz = data0[5];
+        mx = data0[6];
+        my = data0[7];
+        mz = -data0[8];
+        //求初始的姿态角
+        Pitch0 = Math.atan2(-ay,-az) ;
+        Roll0 = Math.atan2(ax,-az);
+        Yaw0 = Math.atan2(-my*Math.cos(Roll0)+mz*Math.sin(Roll0),mx*Math.cos(Pitch0)+my*Math.sin(Pitch0)*Math.sin(Roll0)-mz*Math.sin(Pitch0)*Math.cos(Roll0));
+        firstPitch = Pitch0 * 57.29578;
+        firstRoll = Roll0 * 57.29578;
+        firstYaw = -Yaw0 * 57.29578;
+        //计算初始四元数
+        float[] q0 = EularToQuaternion(Yaw0,Pitch0,Roll0);
+        mahonyAHRS = new MahonyAHRS(0.2f,2,0.005f,q0,eInt);
 
-        for (int i = 0; i < input.size(); i++) {
+
+
+        for (int i = 1; i < input.size(); i++) {
             data = input.get(i);
             ax = -(data[0] -accCalErr_X);
             ay = -(data[1] -accCalErr_Y);
@@ -151,11 +177,7 @@ public class SmoothTest {
             gz = data[5];
             mx = data[6];
             my = data[7];
-            mz = data[8];
-            q[0] = data[9];
-            q[1] = data[10];
-            q[2] = data[11];
-            q[3] = data[12];
+            mz = -data[8];
             jyYaw = data[13];
             GPSLongitude = data[14];
             GPSLattitude = data[15];
@@ -163,18 +185,6 @@ public class SmoothTest {
             GPSYaw = data[17];
             GPSv = data[18];
             GPS_SN = data[19];
-
-//            //设置低通高通滤波器，剥离重力分量得到静止检测算子
-//            acc_mod = Math.sqrt(ax * ax + ay * ay + az * az);
-//            Matrix testR =new Matrix(3,3);
-//            testR = updateRMatrix(testR,(float)ay,(float)-ax,(float)-az,(float)gx,(float)gy,(float)gz,(float)mx,(float)my,(float)mz);
-//            Matrix acc = transWithRMatrix(testR,ax,ay,az);
-//            double acc_mod_end = Math.sqrt(acc.get(0,0) * acc.get(0,0) + acc.get(1,0) * acc.get(1,0) + acc.get(2,0) * acc.get(2,0));
-//            double acc_mod_err = acc_mod_end - acc_mod;
-            //求初始的姿态角
-            Pitch0 = Math.atan2(-ay,-az) ;
-            Roll0 = Math.atan2(ax,-az);
-            Yaw0 = Math.atan2(-my*Math.cos(Roll0)+mz*Math.sin(Roll0),mx*Math.cos(Pitch0)+my*Math.sin(Pitch0)*Math.sin(Roll0)-mz*Math.sin(Pitch0)*Math.cos(Roll0));
 
 //---------------------------------------------滑动滤波-----------------------------------------------------------------//
             //循环队列方法
@@ -210,88 +220,16 @@ public class SmoothTest {
             GPSVe = smoothGPSv * Math.sin(smoothGPSYaw * 3.1415926 / 180) / 3.6;
 
 //-----------------------------------------------滑动滤波结束-------------------------------------------------------------------//
-//            smoothAx *= 9.8015;
-//            smoothAy *= 9.8015;
-//            smoothAz *= 9.8015 ;
-//
-//            if (firstGPSOff == 0){
-//                if (GPS_SN < 4){
-//                    System.out.println("Waiting GPS working......................................");
-//                    continue;
-//                }
-//                System.out.println("first location..................................seesion 0 ");
-//                last_lamb = GPSLongitude;
-//                last_L = GPSLattitude;
-//                last_h = GPSHeight;
-//                AddS.x = last_lamb;
-//                AddS.y = last_L;
-//                AddS.z = last_h;
-//
-//                firstGPSOff = 1;
-//            }
-//            else if(firstGPSOff ==1) {
-//                if(GPS_SN < 4){
-//
-//                }
-//                else if (GPS_SN >= 4) {
-//                    if (GPSLattitude == last_L && GPSLongitude == last_lamb) {
-//                        System.out.println("---------------------------------------session 1");
-//                        if (firstGPSVcc_in == 0) {
-//                            pre_lamb = AddS.x;
-//                            pre_L = AddS.y;
-//
-//                            speedE = GPSv * Math.cos(GPSYaw) / 3.6;
-//                            speedN = GPSv * Math.sin(GPSYaw) / 3.6;
-//                            speedH = GPSHeight - last_h;
-//                            pVx = speedE;
-//                            pVy = speedN;
-//                            System.out.println("---------------------------------------session 1_1");
-//                        }
-//                        firstGPSVcc_in = 1;
-//                        q2R(q);
-//                        Matrix accMatrix = transWithRMatrix(jyR, smoothAx, smoothAy, smoothAz);
-//                        pVx += 0.5 * (accMatrix.get(0, 0) + lastAx) * 0.2;
-//                        pVy += 0.5 * (accMatrix.get(1, 0) + lastAy) * 0.2;
-//                        Px = 0.5 * (pVx + lastpVx) * 0.2;
-//                        Py = 0.5 * (pVy + lastpVy) * 0.2;
-//                        pre_lamb += Px / (111000 * Math.cos(INS_L * 3.1415926 / 180));
-//                        pre_L += Py / 111000;
-//                        lastAx = accMatrix.get(0, 0);
-//                        lastAy = accMatrix.get(1, 0);
-//                        lastpVx = pVx;
-//                        lastpVy = pVy;
-//                    } else {
-//                        System.out.println("---------------------------------------------session 2");
-//                        speedE = GPSv * Math.cos(GPSYaw) / 3.6;
-//                        speedN = GPSv * Math.sin(GPSYaw) / 3.6;
-//                        speedH = GPSHeight - last_h;
-//
-//                        last_lamb = GPSLongitude;
-//                        last_L = GPSLattitude;
-//                        last_h = GPSHeight;
-//
-//                        q2R(q);
-//                        Matrix accMatrix = transWithRMatrix(jyR, smoothAx, smoothAy, smoothAz);
-//                        pVx += 0.5 * (accMatrix.get(0, 0) + lastAx) * 0.2;
-//                        pVy += 0.5 * (accMatrix.get(1, 0) + lastAy) * 0.2;
-//                        Px = 0.5 * (pVx + lastpVx) * 0.2;
-//                        Py = 0.5 * (pVy + lastpVy) * 0.2;
-//                        lastAx = accMatrix.get(0, 0);
-//                        lastAy = accMatrix.get(1, 0);
-//                        lastpVx = pVx;
-//                        lastpVy = pVy;
-//                        INS_lamb = pre_lamb + Px / (111000 * Math.cos(INS_L * 3.1415926 / 180));
-//                        INS_L = pre_L + Py / 111000;
-//                        //-------------卡尔曼融合部分---------------------------------//
-//                        //------------------------------------------------------------//
-//                        AddS.x = INS_lamb;
-//                        AddS.y = INS_L;
-//                        firstGPSVcc_in = 0;
-//                    }
-//                }
-//            }
+
 //-------------------------------------------------以下是乱七八糟的测试部分------------------------------------------------//
- //----------------------------------------------------角度测试部分--------------------------------------------------------//
+        //用mahony互补滤波更新四元数并计算出姿态角
+            mahonyAHRS.update((float)(gx * deg2rad) ,(float)(gy * deg2rad),(float)(gz * deg2rad),(float)ax,(float)ay,(float)az,(float)mx,(float)my,(float)mz);
+            q =  mahonyAHRS.getQuaternion();
+            Yaw = -Math.atan2(2*q[1]*q[2] + 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[2]*q[2] - 1) * rad2deg;
+            Pitch = Math.asin(2*q[2]*q[3] + 2*q[0]*q[1]) * rad2deg;
+            Roll = Math.atan2(2*q[1]*q[3] + 2*q[0]*q[2], 2*q[0]*q[0] + 2*q[3]*q[3] - 1) * rad2deg;
+
+
 
 //-----------------------------------------------------积分测试部分--------------------------------------------------------//
 //用求得的分加速度进行最小二乘训练以及积分两种方式的测试
@@ -300,9 +238,8 @@ public class SmoothTest {
             csvHelper.write(smoothAx + "," + smoothAy + "," + smoothAz + ","  +
                     smoothGx + "," + smoothGy + "," + smoothGz + "," +
                     smoothMx + "," + smoothMy + "," + smoothMz + "," +
-                    smoothGPSYaw + "," + smoothGPSv + "," + GPSVe + "," + GPSVn + "," + AddS.x + "," + AddS.y + "," + slidejyYaw + "," + hubuYaw + "," + yaw + "," + hx + "," + hy +
-                    "," + hAx + "," + hAy + "," + hVx + "," + hVy + "," + hSx + "," + hSy + "," + hSx2 + "," + hSy2 + "," + hV2 + "," + hS2 + "\n");
-
+                    smoothGPSYaw + "," + smoothGPSv + "," + GPSVe + "," + GPSVn + "," +
+                    Roll + "," + Pitch + "," + Yaw + "\n");
 
             smoothAx = 0;
             smoothAy = 0;
@@ -318,6 +255,7 @@ public class SmoothTest {
         }
 
     }
+
 
     //由jy四元数构造旋转矩阵R
     private static void q2R(double[] q) {
@@ -346,8 +284,7 @@ public class SmoothTest {
 
     // 通过四元数构造转换矩阵R，然后acc = R · acc完成转换。
     private static Matrix updateRMatrix(Matrix mahonyR,float aX, float aY, float aZ, float gX, float gY, float gZ,float mx,float my,float mz) {
-//        MahonyAHRS mahonyAHRS = new MahonyAHRS((float) 0.2, (float) 2, (float) 0.05);
-        mahonyAHRS.update(gX, gY, gZ, aX, aY, aZ,mx,my,mz);
+        mahonyAHRS.update((float)(gX * deg2rad) ,(float)(gY * deg2rad),(float)(gZ * deg2rad), aX, aY, aZ,mx,my,mz);
 
         float[] q2 = mahonyAHRS.Quaternion;        // 四元数
 
@@ -387,5 +324,43 @@ public class SmoothTest {
 //		m = R.times(m);
 
         return result;
+    }
+
+    //设置对角矩阵
+    private static Matrix DiagMatrix(double eye[]){
+        int n = eye.length;
+        Matrix aMatrix = new Matrix(n,n);
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(i==j)
+                    aMatrix.set(i, j, eye[i]);
+            }
+        }
+        return aMatrix;
+    }
+    //设置单位阵
+    private static Matrix EyeMatrix(int n){
+        double[] eye = new double[n];
+        Arrays.fill(eye, 1);
+        Matrix bMatrix = DiagMatrix(eye);
+        return bMatrix;
+    }
+
+
+    private static float[] EularToQuaternion(double yaw, double pitch, double roll){
+        float[] Qresult = new float[4];
+        double cosRoll = Math.cos(roll*0.5);
+        double sinRoll = Math.sin(roll*0.5);
+        double cosPitch = Math.cos(pitch*0.5);
+        double sinPitch = Math.sin(pitch*0.5);
+        double cosYaw = Math.cos(yaw*0.5);
+        double sinYaw = Math.sin(yaw*0.5);
+
+        Qresult[0] = (float)(cosRoll*cosPitch*cosYaw + sinRoll*sinPitch*sinYaw);
+        Qresult[1] = (float)(sinRoll*cosPitch*cosYaw - cosRoll*sinPitch*sinYaw);
+        Qresult[2] = (float)(cosRoll*sinPitch*cosYaw + sinRoll*cosPitch*sinYaw);
+        Qresult[3] = (float)(cosRoll*cosPitch*sinYaw - sinRoll*sinRoll*cosYaw);
+
+        return Qresult;
     }
 }

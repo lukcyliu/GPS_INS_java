@@ -13,20 +13,6 @@ public class MahonyAHRS {
 
     // the integral error.
     private float[] eInt;
-
-    // Initializes a new instance of the <see cref="MadgwickAHRS"/> class.
-    public MahonyAHRS(float samplePeriod) {
-        this(samplePeriod, 1f, 0f);
-    }
-
-    // Initializes a new instance of the <see cref="MadgwickAHRS"/> class.
-    // <param name="kp">
-    // Algorithm proportional gain.
-    // </param> 
-    public MahonyAHRS(float samplePeriod, float kp) {
-        this(samplePeriod, kp, 0f);
-    }
-
     // Initializes a new instance of the <see cref="MadgwickAHRS"/> class.
     // <param name="kp">
     // Algorithm proportional gain.
@@ -34,12 +20,12 @@ public class MahonyAHRS {
     // <param name="ki">
     // Algorithm integral gain.
     // </param>
-    public MahonyAHRS(float samplePeriod, float kp, float ki) {
+    public MahonyAHRS(float samplePeriod, float kp, float ki,float[] quaternion,float[] eint) {
         SamplePeriod = samplePeriod;
         Kp = kp;
         Ki = ki;
-        Quaternion = new float[]{1f, 0f, 0f, 0f};
-        eInt = new float[]{0f, 0f, 0f};
+        Quaternion = quaternion;
+        eInt = eint;
     }
 
     // Algorithm AHRS update method. Requires only gyroscope and accelerometer data.
@@ -112,13 +98,14 @@ public class MahonyAHRS {
         // Reference direction of Earth's magnetic field
         hx = 2f * mx * (0.5f - q3q3 - q4q4) + 2f * my * (q2q3 - q1q4) + 2f * mz * (q2q4 + q1q3);
         hy = 2f * mx * (q2q3 + q1q4) + 2f * my * (0.5f - q2q2 - q4q4) + 2f * mz * (q3q4 - q1q2);
-        bx = (float) Math.sqrt((hx * hx) + (hy * hy));
+//        bx = (float) Math.sqrt((hx * hx) + (hy * hy));
+        bx=0;
         bz = 2f * mx * (q2q4 - q1q3) + 2f * my * (q3q4 + q1q2) + 2f * mz * (0.5f - q2q2 - q3q3);
 
         // Estimated direction of gravity and magnetic field
-        vx = 2f * (q2q4 - q1q3);
-        vy = 2f * (q1q2 + q3q4);
-        vz = q1q1 - q2q2 - q3q3 + q4q4;
+        vx = -2f * (q2q4 - q1q3);
+        vy = -2f * (q1q2 + q3q4);
+        vz = -(q1q1 - q2q2 - q3q3 + q4q4);
         wx = 2f * bx * (0.5f - q3q3 - q4q4) + 2f * bz * (q2q4 - q1q3);
         wy = 2f * bx * (q2q3 - q1q4) + 2f * bz * (q1q2 + q3q4);
         wz = 2f * bx * (q1q3 + q2q4) + 2f * bz * (0.5f - q2q2 - q3q3);
@@ -234,5 +221,8 @@ public class MahonyAHRS {
         Quaternion[1] = q2 * norm;
         Quaternion[2] = q3 * norm;
         Quaternion[3] = q4 * norm;
+    }
+    public float[] getQuaternion() {
+        return Quaternion;
     }
 }

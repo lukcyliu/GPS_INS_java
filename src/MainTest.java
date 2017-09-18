@@ -68,7 +68,6 @@ MainTest {
 
         // 两个算法
         madgwickAHRS = new MadgwickAHRS((float) samplePeriod, 0.041f);// 实例化，传入的参数第一个是采样的时间间隔，千万不能错，第二个应该是跟梯度下降算法的收敛速度有关的。。。
-        mahonyAHRS = new MahonyAHRS((float) samplePeriod);
 
 //		ArrayList SampleVx =new ArrayList();//用来存放所有时刻的速度
 //		ArrayList SampleVy =new ArrayList();
