@@ -120,8 +120,8 @@ public class INSTest {
         double ax, ay, az, gx, gy, gz, mx, my, mz, jyYaw, GPSYaw = 0, GPSv = 0, GPSLongitude, GPSLattitude, GPSHeight, GPS_SN;
         float[] q = new float[4];
         double smoothAx = 0, smoothAy = 0, smoothAz = 0, smoothGx = 0, smoothGy = 0, smoothGz = 0, smoothMx = 0, smoothMy = 0, smoothMz = 0, smoothGPSYaw = 0, smoothGPSv = 0;
-        double GPSVn = 0, GPSVe = 0;
-
+        double GPSVn = 0, GPSVe = 0,GPSVu = 0;
+        double lastGPSLongtitude = 0,lastGPSLattitude = 0,lastGPSh = 51.2;
         double last_L = 0, last_lamb = 0, last_h = 0;
         int firstGPSOff = 0;
         int firstGPSVcc_in = 0;
@@ -130,9 +130,9 @@ public class INSTest {
         double speedE=0, speedN=0, speedH=0;
         double pre_lamb=0, pre_L=0, pre_h=0;
         double INS_lamb=0,INS_L=0,INS_h=0;
-        double lastpVx = 0, lastpVy = 0;
-        double pVx = 0,pVy = 0;
-        double lastAx=0,lastAy = 0;
+        double lastpVx = 0, lastpVy = 0,lastpVz =0;
+        double pVx = 0,pVy = 0,pVz = 0;
+        double lastAx=0,lastAy = 0,lastAz = 0;
         double Px = 0, Py = 0;
         Position AddS = new Position();
         int insCnt=0;
@@ -143,6 +143,47 @@ public class INSTest {
         //Re长半轴 r短半轴 f椭球扁率 e椭球偏心率 wie地球自转角速率
         double earthRe=6378137,earthr=6356752.3142,earthf=1/298.257,earthe=0.0818,earthwie=7.292e-5;
         double G0 = 9.8015;
+
+        double Rm = 0,Rn = 0,R0 = 0,lastRm = 0,lastRn = 0;
+        double WieE = 0,WinE = 0,WWX = 0;
+        Matrix Fn = new Matrix(3,1);
+        double[] Vccq = {0,0,0};
+        double L = 39.980793, E = 116.321083,h = 51.2;
+        //----------------------------------------融合相关参数--------------------------------------------------------------//
+        double Q_wg = (1/(57*3600))*(1/(57*3600));//陀螺的随机漂移为0.5度每小时
+        double Q_wa = Math.pow(((0.5e-4)*G0),2);//加速度计的随机偏差为0.5e-4*g
+        double[] Q_diag = {Q_wg, Q_wg, Q_wg, Q_wa, Q_wa, Q_wa };
+        Matrix Q = DiagMatrix(Q_diag);
+        double[][] tg = {{300},{300},{300}};//陀螺仪误差漂移相关时间
+        double[][] ta = {{1000},{1000},{1000}};//加表误差漂移相关时间
+        Matrix Tg = new Matrix(tg);
+        Matrix Ta = new Matrix(ta);
+        double Rlamt = 1e-5 * 3.1415926 /(60 * 180);//经纬度误差均方根，弧度制
+        double Rl = 1e-5 * 3.1415926 /(60 * 180);
+        double Rh = 1e-11;//高度误差均方根，单位米
+        double Rvx = 1e-7;//速度误差均方根，单位 米/秒
+        double Rvy = 1e-7;
+        double Rvz = 5e-9;
+        double[] Rk = {Rlamt, Rl, Rh, Rvx, Rvy, Rvz};
+        Matrix R = DiagMatrix(Rk);
+        double[] PP0k = {(0.1/(57))*(0.1/(57)), (0.1/(57))*(0.1/(57)), (0.1/(57))*(0.1/(57)),
+                          0.01*0.01, 0.01*0.01, 0.01*0.01,
+                          0, 0, 0,
+                          (0.1/(57*3600))*(0.1/(57*3600)), (0.1/(57*3600))*(0.1/(57*3600)), (0.1/(57*3600))*(0.1/(57*3600)),
+                          ((1e-4)*G0)*((1e-4)*G0), ((1e-4)*G0)*((1e-4)*G0), ((1e-4)*G0)*((1e-4)*G0)};
+        Matrix PP0 = DiagMatrix(PP0k);//初始误差协方差阵,加速度计的初始偏值均取1e-4*g 陀螺的常值漂移取0.1度每小时
+        Matrix X = new Matrix(15,1);
+        //连续系统状态转移阵
+        Matrix F = new Matrix(15,15);
+        //连续系统输入矩阵
+        Matrix G = new Matrix(15,6);
+        //连续系统量测阵
+        Matrix H = new Matrix(6,15);
+        //融合迭代补偿tao
+        double tao = 0;
+        
+
+
         //初始化定姿
         double[] data0 = input.get(0);
         ax = -(data0[0] -accCalErr_X);
@@ -218,6 +259,7 @@ public class INSTest {
 
             GPSVn = smoothGPSv * Math.cos(smoothGPSYaw * 3.1415926 / 180) / 3.6;
             GPSVe = smoothGPSv * Math.sin(smoothGPSYaw * 3.1415926 / 180) / 3.6;
+            GPSVu = GPSHeight - lastGPSh;
 
 //-----------------------------------------------滑动滤波结束-------------------------------------------------------------------//
 
@@ -228,18 +270,66 @@ public class INSTest {
             Yaw = -Math.atan2(2*q[1]*q[2] + 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[2]*q[2] - 1) * rad2deg;
             Pitch = Math.asin(2*q[2]*q[3] + 2*q[0]*q[1]) * rad2deg;
             Roll = Math.atan2(2*q[1]*q[3] + 2*q[0]*q[2], 2*q[0]*q[0] + 2*q[3]*q[3] - 1) * rad2deg;
+            //有更新四元数得到更新旋转矩阵Cnb
+            mahonyR = quternionToCnbMatrix(q);
+            //转置得到Cbn
+            mahonyR.transpose();
+
+            //计算更新的子午曲率半径Rm和卯酉曲率半径Rn以及曲率平均半径R0
+            Rm = earthRe * (1-2*earthf+3*earthf*Math.sin(last_L)*Math.sin(last_L));
+            Rn = earthRe * (1 + earthf*Math.sin(last_L)*Math.sin(last_L));
+            R0 = Math.sqrt(Rm*Rm + Rn*Rn);
 
 
+            //投影到东北天坐标系下计算绝对加速度比力和计算绝对速度微分Vccq
+            Fn = accToFn(mahonyR,ax,ay,az).times(G0);
+            Vccq[0] = Fn.get(0,0) ;
+            Vccq[1] = Fn.get(1,0) ;
+            Vccq[2] = Fn.get(2,0) + G0;
 
+            pVx += 0.5 * (Vccq[0] + lastAx) * 0.2;
+            pVy += 0.5 * (Vccq[1] + lastAy) * 0.2;
+            pVz += 0.5 * (Vccq[2] + lastAz) * 0.2;
+
+            L += (lastpVy / (Rm + last_h)) * 0.2 / 3.65;
+            E += (lastpVx / (Math.cos(last_L)*(Rn+last_h))) * 0.2 /3.58;
+            h += -lastpVz * 0.2;
+
+            lastAx = Vccq[0];
+            lastAy = Vccq[1];
+            lastAz = Vccq[2];
+            lastpVx = pVx;
+            lastpVy = pVy;
+            lastpVz = pVz;
+            last_L = L;
+            last_h = h;
+
+            lastGPSLongtitude = GPSLongitude;
+            lastGPSLattitude = GPSLattitude;
+            lastGPSh = GPSHeight;
 //-----------------------------------------------------积分测试部分--------------------------------------------------------//
-//用求得的分加速度进行最小二乘训练以及积分两种方式的测试
+//融合------------------------------
+            tao += 0.2;
+            double[][] Dpv = {{L-GPSLattitude},{E-GPSLongitude},{h-GPSHeight},{pVx-GPSVe},{pVy-GPSVn},{pVz-GPSVu}};
+             X = kalman_GPS_INS_pv(Dpv,pVx,pVy,pVz,last_L,last_h,mahonyR,Fn,Tg,Ta,tao,Rm,Rn,PP0,X,Q,R);
+            pVx -= X.get(3,0);
+            pVy -= X.get(4,0);
+            pVz -= X.get(5,0);
+            L = L - 0.29 * X.get(6,0);
+            E = E - 0.32 * X.get(7,0);
+            h = h - X.get(8,0);
+
+
 
 
             csvHelper.write(smoothAx + "," + smoothAy + "," + smoothAz + ","  +
                     smoothGx + "," + smoothGy + "," + smoothGz + "," +
                     smoothMx + "," + smoothMy + "," + smoothMz + "," +
                     smoothGPSYaw + "," + smoothGPSv + "," + GPSVe + "," + GPSVn + "," +
-                    Roll + "," + Pitch + "," + Yaw + "\n");
+                    Roll + "," + Pitch + "," + Yaw + "," +
+                    Vccq[0] + "," + Vccq[1] + "," + Vccq[2] + "," +
+                    pVx + "," + pVy + "," + pVz + "," +
+                    E*rad2deg + ","+ L*rad2deg + "," + h + "," + "\n");
 
             smoothAx = 0;
             smoothAy = 0;
@@ -283,10 +373,9 @@ public class INSTest {
     }
 
     // 通过四元数构造转换矩阵R，然后acc = R · acc完成转换。
-    private static Matrix updateRMatrix(Matrix mahonyR,float aX, float aY, float aZ, float gX, float gY, float gZ,float mx,float my,float mz) {
-        mahonyAHRS.update((float)(gX * deg2rad) ,(float)(gY * deg2rad),(float)(gZ * deg2rad), aX, aY, aZ,mx,my,mz);
-
-        float[] q2 = mahonyAHRS.Quaternion;        // 四元数
+    private static Matrix quternionToCnbMatrix(float[] quaternion) {
+        Matrix mahonyR = new Matrix(3,3);
+        float[] q2 = quaternion;        // 四元数
 
         double q0q0 = q2[0] * q2[0];
         double q1q1 = q2[1] * q2[1];
@@ -313,7 +402,7 @@ public class INSTest {
         return mahonyR;
     }
 
-    private static Matrix transWithRMatrix(Matrix R, double x, double y, double z) {
+    private static Matrix accToFn(Matrix R, double x, double y, double z) {
 
         Matrix m = new Matrix(3, 1);
         Matrix result = new Matrix(3, 1);
@@ -362,5 +451,92 @@ public class INSTest {
         Qresult[3] = (float)(cosRoll*cosPitch*sinYaw - sinRoll*sinRoll*cosYaw);
 
         return Qresult;
+    }
+
+    public static Matrix  kalman_GPS_INS_pv(double[][] Dpv,double Ve,double Vn,double Vu,double L,double h,Matrix mahonyR,Matrix Fn,Matrix Tg,Matrix Ta,double tao,double Rm,double Rn,Matrix PP0,Matrix X,Matrix Q,Matrix R) {
+        double wie = 7.292e-5;
+
+        double fe = Fn.get(0, 0);
+        double fn = Fn.get(1, 0);
+        double fu = Fn.get(2, 0);
+        //连续系统状态转换阵 F 的时间更新
+        Matrix F = new Matrix(15, 15);
+        double secL2 = (1 / (Math.sin(L) * Math.sin(L)));
+        double Rnh2 = (Rn + h) * (Rn + h);
+        double Rmh2 = ((Rm + h) * (Rm + h));
+        double tg = Tg.get(0, 0);
+        double ta = Ta.get(0, 0);
+
+        double[][] matrixF = {
+                {0, -wie * Math.sin(L) - Ve * Math.tan(L) / (Rn + h), Vn / (Rm + h), 0, 1 / (Rn + h), 0, -wie * Math.sin(L), 0, -Ve / Rnh2, mahonyR.get(0,0), mahonyR.get(1,0), mahonyR.get(2,0), 0, 0, 0},
+                {wie * Math.sin(L) + Ve * Math.tan(L) / (Rn + h), 0, wie * Math.cos(L) + Ve / (Rn + h), -1 / (Rm + h), 0, 0, 0, 0, Vn / Rmh2, mahonyR.get(0,1), mahonyR.get(1,1), mahonyR.get(2,1), 0, 0, 0},
+                {-Vn / (Rm + h), -wie * Math.cos(L) - Ve / (Rn + h), 0, 0, -Math.tan(L) / (Rn + h), 0, -wie * Math.cos(L) - Ve * secL2 / (Rn + h), 0, Ve * Math.tan(L) / Rnh2, mahonyR.get(0,2), mahonyR.get(1,2), mahonyR.get(2,2), 0, 0, 0},
+                {0, -fu, fe, Vu / (Rm + h), -2 * wie * Math.sin(L) - Ve * Math.tan(L) / (Rn + h) - Ve * Math.tan(L) / (Rn + h), Vn / (Rm + h), -2 * wie * Math.cos(L) * Ve - Ve * Ve * secL2 / (Rn + h), 0, Ve * Ve * Math.tan(L) / Rnh2 - Vn * Vu / Rmh2, 0, 0, 0, mahonyR.get(0,0), mahonyR.get(1,0), mahonyR.get(2,0)},
+                {fu, 0, -fn, 2 * wie * Math.sin(L) + Ve * Math.tan(L) / (Rn + h), (Vn * Math.tan(L) + Vu) / (Rn + h), 2 * wie * Math.cos(L) + Ve / (Rn + h), (2 * wie * Math.cos(L) + Ve * (secL2) / (Rn + h)) * Vn - 2 * wie * Vu * Math.sin(L), 0, (Ve * Vn * Math.tan(L) - Ve * Vu) / Rnh2, 0, 0, 0,mahonyR.get(0,1), mahonyR.get(1,1), mahonyR.get(2,1)},
+                {-fe, fn, 0, -Vn / (Rm + h), -2 * wie * Math.cos(L) - 2 * Ve / (Rn + h), 0, 2 * Ve * wie * Math.sin(L), 0, Ve * Ve / Rnh2 + Vn * Vn / Rmh2, 0, 0, 0, mahonyR.get(0,2), mahonyR.get(1,2), mahonyR.get(2,2)},
+                {0, 0, 0, 1 / (Rm + h), 0, 0, 0, 0, -Vn / Rmh2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 1 / ((Rn + h) * Math.cos(L)), 0, Ve * Math.tan(L) / ((Rn + h) * Math.cos(L)), 0, -Ve / (Math.cos(L) * Rnh2), 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, -1 / tg, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1 / tg, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1 / tg, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1 / ta, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1 / ta, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1 / ta}
+        };
+
+        F = new Matrix(matrixF);
+//        F.print(15,15);
+
+        Matrix G = new Matrix(15,6);
+
+        double[][] matrixG = {
+                {mahonyR.get(0,0), mahonyR.get(1,0), mahonyR.get(2,0),0,0,0},
+                {mahonyR.get(0,1), mahonyR.get(1,1), mahonyR.get(2,1),0,0,0},
+                {mahonyR.get(0,2), mahonyR.get(1,2), mahonyR.get(2,2),0,0,0},
+                {0, 0, 0, mahonyR.get(0,0), mahonyR.get(1,0), mahonyR.get(2,0)},
+                {0, 0, 0, mahonyR.get(0,1), mahonyR.get(1,1), mahonyR.get(2,1)},
+                {0, 0, 0, mahonyR.get(0,2), mahonyR.get(1,2), mahonyR.get(2,2)},
+                {0,0,0,0,0,0},
+                {0,0,0,0,0,0},
+                {0,0,0,0,0,0},
+                {0,0,0,0,0,0},
+                {0,0,0,0,0,0},
+                {0,0,0,0,0,0},
+                {0,0,0,0,0,0},
+                {0,0,0,0,0,0},
+                {0,0,0,0,0,0}
+        };
+        G = new Matrix(matrixG);
+//        G.print(15,6);
+
+        Matrix H = new Matrix(6,15);
+        double[][] matrixH = {
+                {0, 0 , 0 , 0 , 0 , 0 , Rm+h , 0,0,0,0,0,0,0,0},
+                {0 , 0 , 0 , 0 , 0 , 0 , 0 , (Rn+h)*Math.cos(L) , 0 , 0 , 0 , 0 , 0 , 0 , 0},
+                {0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0},
+                {0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0},
+                {0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0},
+                {0 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0},
+        };
+        H = new Matrix(matrixH);
+
+//        H.print(6,15);
+
+        //连续系统离散化
+        Matrix eye15 = EyeMatrix(15);
+        Matrix A = eye15.plus(F.times(tao));
+        Matrix B = G.times(tao);
+        //卡尔曼滤波开始
+        X = A.times(X);
+        Matrix P = A.times(PP0).times(A.transpose()).plus(B.times(Q).times(B.transpose()));
+        Matrix Y = H.times(P).times(H.transpose()).plus(R);
+        Matrix K = P.times(H.transpose()).times(Y.inverse());
+        Matrix PP = (eye15.minus(K.times(H))).times(P);
+        Matrix Z = new Matrix(Dpv);
+        Matrix W = Z.minus(H.times(X));
+        Matrix XX = X.plus(K.times(W));
+
+        return XX;
     }
 }
