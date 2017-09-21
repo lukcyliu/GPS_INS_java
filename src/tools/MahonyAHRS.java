@@ -9,7 +9,7 @@ public class MahonyAHRS {
     // the algorithm integral gain.
     public float Ki;
     // the Quaternion output.
-    public float[] Quaternion;
+    public float[] Quaternion = {0,0,0,0};
 
     // the integral error.
     private float[] eInt;
@@ -20,11 +20,10 @@ public class MahonyAHRS {
     // <param name="ki">
     // Algorithm integral gain.
     // </param>
-    public MahonyAHRS(float samplePeriod, float kp, float ki,float[] quaternion,float[] eint) {
+    public MahonyAHRS(float samplePeriod, float kp, float ki,float[] eint) {
         SamplePeriod = samplePeriod;
         Kp = kp;
         Ki = ki;
-        Quaternion = quaternion;
         eInt = eint;
     }
 
@@ -58,7 +57,7 @@ public class MahonyAHRS {
     // </param>
     // <remarks>
     // Optimised for minimal arithmetic.
-    // </remarks> 
+    // </remarks>
     public void update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz) {
         float q1 = Quaternion[0], q2 = Quaternion[1], q3 = Quaternion[2], q4 = Quaternion[3];   // short name local variable for readability
         float norm;
@@ -98,7 +97,7 @@ public class MahonyAHRS {
         // Reference direction of Earth's magnetic field
         hx = 2f * mx * (0.5f - q3q3 - q4q4) + 2f * my * (q2q3 - q1q4) + 2f * mz * (q2q4 + q1q3);
         hy = 2f * mx * (q2q3 + q1q4) + 2f * my * (0.5f - q2q2 - q4q4) + 2f * mz * (q3q4 - q1q2);
-//        bx = (float) Math.sqrt((hx * hx) + (hy * hy));
+        bx = (float) Math.sqrt((hx * hx) + (hy * hy));
         bx=0;
         bz = 2f * mx * (q2q4 - q1q3) + 2f * my * (q3q4 + q1q2) + 2f * mz * (0.5f - q2q2 - q3q3);
 
@@ -115,9 +114,9 @@ public class MahonyAHRS {
         ey = (az * vx - ax * vz) + (mz * wx - mx * wz);
         ez = (ax * vy - ay * vx) + (mx * wy - my * wx);
         if (Ki > 0f) {
-            eInt[0] += ex;      // accumulate integral error
-            eInt[1] += ey;
-            eInt[2] += ez;
+            eInt[0] += ex*SamplePeriod;      // accumulate integral error
+            eInt[1] += ey*SamplePeriod;
+            eInt[2] += ez*SamplePeriod;
         } else {
             eInt[0] = 0.0f;     // prevent integral wind up
             eInt[1] = 0.0f;
@@ -222,7 +221,25 @@ public class MahonyAHRS {
         Quaternion[2] = q3 * norm;
         Quaternion[3] = q4 * norm;
     }
+
+    public void setQuaternion(float[] quaternion) {
+        Quaternion = quaternion;
+    }
+
     public float[] getQuaternion() {
         return Quaternion;
+    }
+
+    public float[] quaternProd(float[] a,float[] b){
+        float[] ab = new float[4];
+        ab[0] = a[0]*b[0]-a[1]*b[1]-a[2]*b[2]-a[3]*b[3];
+        ab[1] = a[0]*b[1]+a[1]*b[0]+a[2]*b[3]-a[3]*b[2];
+        ab[2] = a[0]*b[2]-a[1]*b[3]+a[2]*b[0]+a[3]*b[1];
+        ab[3] = a[0]*b[3]+a[1]*b[2]-a[2]*b[1]+a[3]*b[0];
+        return ab;
+    }
+    public float[] quaternConj(float[] q){
+        float[] qConj = {q[0],-q[1],-q[2],-q[3]};
+        return qConj;
     }
 }
