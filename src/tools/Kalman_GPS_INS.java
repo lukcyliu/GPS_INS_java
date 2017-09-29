@@ -128,9 +128,9 @@ public class Kalman_GPS_INS {
         Matrix Z = new Matrix(Dpv);
         Matrix W = Z.minus(H.times(X));
 //        W.print(3,7);
-        XX = X.plus(K.times(W));
+        X = X.plus(K.times(W));
 //        XX.print(3,7);
-
+        XX = X;
         return XX;
     }
 
