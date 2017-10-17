@@ -247,7 +247,7 @@ public class INSTest {
             mahonyR = quternionToCnbMatrix(q);
             //转置得到Cbn
             mahonyR.transpose();
-            mahonyR.print(3,3);
+
 
             //计算更新的子午曲率半径Rm和卯酉曲率半径Rn以及曲率平均半径R0
             Rm = earthRe * (1-2*earthf+3*earthf*Math.sin(last_L)*Math.sin(last_L));
@@ -303,7 +303,7 @@ public class INSTest {
                     Roll + "," + Pitch + "," + Yaw + "," +
                     Vccq[0] + "," + Vccq[1] + "," + Vccq[2] + "," +
                     pVx + "," + pVy + "," + pVz + "," +
-                    E*rad2deg + ","+ L*rad2deg + "," + h + "," + "\n");
+                    E*rad2deg + ","+ L*rad2deg + "," + h + "," + q[0]+ "," + q[1] + "," + q[2] + "," + q[3] + "\n");
 
             smoothAx = 0;
             smoothAy = 0;

@@ -27,6 +27,7 @@ public class MahonyAHRS {
         eInt = eint;
     }
 
+
     // Algorithm AHRS update method. Requires only gyroscope and accelerometer data.
     // <param name="gx">
     // Gyroscope x axis measurement in radians/s.
@@ -98,16 +99,16 @@ public class MahonyAHRS {
         hx = 2f * mx * (0.5f - q3q3 - q4q4) + 2f * my * (q2q3 - q1q4) + 2f * mz * (q2q4 + q1q3);
         hy = 2f * mx * (q2q3 + q1q4) + 2f * my * (0.5f - q2q2 - q4q4) + 2f * mz * (q3q4 - q1q2);
         bx = (float) Math.sqrt((hx * hx) + (hy * hy));
-        bx=0;
+        //bx=0;
         bz = 2f * mx * (q2q4 - q1q3) + 2f * my * (q3q4 + q1q2) + 2f * mz * (0.5f - q2q2 - q3q3);
 
         // Estimated direction of gravity and magnetic field
         vx = -2f * (q2q4 - q1q3);
         vy = -2f * (q1q2 + q3q4);
         vz = -(q1q1 - q2q2 - q3q3 + q4q4);
-        wx = 2f * bx * (0.5f - q3q3 - q4q4) + 2f * bz * (q2q4 - q1q3);
-        wy = 2f * bx * (q2q3 - q1q4) + 2f * bz * (q1q2 + q3q4);
-        wz = 2f * bx * (q1q3 + q2q4) + 2f * bz * (0.5f - q2q2 - q3q3);
+        wx = 0.5f*(2f * bx * (0.5f - q3q3 - q4q4) + 2f * bz * (q2q4 - q1q3));
+        wy = 0.5f*(2f * bx * (q2q3 - q1q4) + 2f * bz * (q1q2 + q3q4));
+        wz = 0.5f*(2f * bx * (q1q3 + q2q4) + 2f * bz * (0.5f - q2q2 - q3q3));
 
         // Error is cross product between estimated direction and measured direction of gravity
         ex = (ay * vz - az * vy) + (my * wz - mz * wy);

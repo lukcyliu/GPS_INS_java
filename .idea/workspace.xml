@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="6f29282b-ba39-401a-b39e-cc4970bd2a35" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/smooth/CsvHelper.java" afterPath="$PROJECT_DIR$/src/smooth/CsvHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/smooth/INSTest.java" afterPath="$PROJECT_DIR$/src/smooth/INSTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java" afterPath="$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tools/MahonyAHRS.java" afterPath="$PROJECT_DIR$/src/tools/MahonyAHRS.java" />
     </list>
     <ignored path="GPS_INS2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,20 +45,8 @@
       <file leaf-file-name="INSTest.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/smooth/INSTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="287" column="19" lean-forward="false" selection-start-line="287" selection-start-column="19" selection-end-line="287" selection-end-column="21" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Kalman_GPS_INS.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1292">
-              <caret line="123" column="61" lean-forward="true" selection-start-line="123" selection-start-column="61" selection-end-line="123" selection-end-column="61" />
+            <state relative-caret-position="385">
+              <caret line="287" column="0" lean-forward="false" selection-start-line="287" selection-start-column="0" selection-end-line="287" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -66,19 +57,31 @@
       <file leaf-file-name="MahonyAHRS.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tools/MahonyAHRS.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="15" column="74" lean-forward="false" selection-start-line="15" selection-start-column="74" selection-end-line="15" selection-end-column="74" />
+            <state relative-caret-position="500">
+              <caret line="110" column="76" lean-forward="false" selection-start-line="110" selection-start-column="76" selection-end-line="110" selection-end-column="76" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MadgwickAHRS.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tools/MadgwickAHRS.java">
+      <file leaf-file-name="CsvHelper.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/smooth/CsvHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4575">
-              <caret line="183" column="21" lean-forward="false" selection-start-line="183" selection-start-column="21" selection-end-line="183" selection-end-column="21" />
+            <state relative-caret-position="303">
+              <caret line="47" column="48" lean-forward="false" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Kalman_GPS_INS.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="96">
+              <caret line="119" column="39" lean-forward="false" selection-start-line="119" selection-start-column="39" selection-end-line="119" selection-end-column="39" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -126,12 +129,12 @@
         <option value="$PROJECT_DIR$/src/IOAdapter.java" />
         <option value="$PROJECT_DIR$/src/smooth/FileHelper.java" />
         <option value="$PROJECT_DIR$/src/listsquare/VccIntegrate.java" />
-        <option value="$PROJECT_DIR$/src/smooth/CsvHelper.java" />
         <option value="$PROJECT_DIR$/libs/Jama-1.0.3.jar!/Jama/Matrix.class" />
-        <option value="$PROJECT_DIR$/src/tools/MahonyAHRS.java" />
         <option value="$PROJECT_DIR$/src/MainTest.java" />
         <option value="$PROJECT_DIR$/src/smooth/SmoothTest.java" />
+        <option value="$PROJECT_DIR$/src/tools/MahonyAHRS.java" />
         <option value="$PROJECT_DIR$/src/smooth/INSTest.java" />
+        <option value="$PROJECT_DIR$/src/smooth/CsvHelper.java" />
         <option value="$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java" />
       </list>
     </option>
@@ -146,10 +149,10 @@
     <treeState />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1447" />
-    <option name="y" value="176" />
-    <option name="width" value="1454" />
-    <option name="height" value="867" />
+    <option name="x" value="247" />
+    <option name="y" value="138" />
+    <option name="width" value="1451" />
+    <option name="height" value="866" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -167,9 +170,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -182,8 +184,59 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GPS_INS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GPS_INS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GPS_INS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GPS_INS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GPS_INS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GPS_INS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="smooth" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -684,7 +737,11 @@
       <workItem from="1506396623228" duration="8583000" />
       <workItem from="1506476072468" duration="5391000" />
       <workItem from="1506561453203" duration="1883000" />
-      <workItem from="1506668509305" duration="5673000" />
+      <workItem from="1506668509305" duration="8828000" />
+      <workItem from="1507518875525" duration="651000" />
+      <workItem from="1507603377606" duration="174000" />
+      <workItem from="1508124467051" duration="1884000" />
+      <workItem from="1508204774739" duration="8587000" />
     </task>
     <task id="LOCAL-00001" summary="滑动滤波1.0">
       <created>1500256610085</created>
@@ -742,14 +799,22 @@
       <option name="project" value="LOCAL" />
       <updated>1505986472408</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="滑动滤波9.21">
+      <created>1506677792394</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1506677792394</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="218406000" />
+    <option name="totallyTimeSpent" value="232857000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1447" y="176" width="1454" height="867" extended-state="0" />
+    <frame x="247" y="138" width="1451" height="866" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -761,12 +826,12 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.159436" sideWeight="0.5063966" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.49515906" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12414734" sideWeight="0.4936034" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17076503" sideWeight="0.4936034" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26327115" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37239397" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.49515906" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.48962656" order="1" side_tool="false" content_ui="tabs" />
@@ -823,7 +888,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="110" />
+      <option name="time" value="113" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1161,7 +1226,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="25">
           <caret line="248" column="51" lean-forward="false" selection-start-line="248" selection-start-column="51" selection-end-line="248" selection-end-column="51" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1199,16 +1263,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tools/MahonyAHRS.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="15" column="74" lean-forward="false" selection-start-line="15" selection-start-column="74" selection-end-line="15" selection-end-column="74" />
+        <state relative-caret-position="500">
+          <caret line="110" column="76" lean-forward="false" selection-start-line="110" selection-start-column="76" selection-end-line="110" selection-end-column="76" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/smooth/INSTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="287" column="19" lean-forward="false" selection-start-line="287" selection-start-column="19" selection-end-line="287" selection-end-column="21" />
+        <state relative-caret-position="385">
+          <caret line="287" column="0" lean-forward="false" selection-start-line="287" selection-start-column="0" selection-end-line="287" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1217,16 +1281,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/smooth/CsvHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="16" column="68" lean-forward="true" selection-start-line="16" selection-start-column="68" selection-end-line="16" selection-end-column="68" />
+        <state relative-caret-position="303">
+          <caret line="47" column="48" lean-forward="false" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1292">
-          <caret line="123" column="61" lean-forward="true" selection-start-line="123" selection-start-column="61" selection-end-line="123" selection-end-column="61" />
+        <state relative-caret-position="96">
+          <caret line="119" column="39" lean-forward="false" selection-start-line="119" selection-start-column="39" selection-end-line="119" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

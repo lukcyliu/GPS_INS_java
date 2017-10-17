@@ -54,7 +54,7 @@ public class Kalman_GPS_INS {
         double Rmh2 = ((Rm + h) * (Rm + h));
         double tg = Tg.get(0, 0);
         double ta = Ta.get(0, 0);
-
+        System.out.println("Ve = "+Ve+" , Vn = "+Vn+" , Vu = "+Vu);
         double[][] matrixF = {
                 {0, -wie * Math.sin(L) - Ve * Math.tan(L) / (Rn + h), Vn / (Rm + h), 0, 1 / (Rn + h), 0, -wie * Math.sin(L), 0, -Ve / Rnh2, mahonyR.get(0,0), mahonyR.get(1,0), mahonyR.get(2,0), 0, 0, 0},
                 {wie * Math.sin(L) + Ve * Math.tan(L) / (Rn + h), 0, wie * Math.cos(L) + Ve / (Rn + h), -1 / (Rm + h), 0, 0, 0, 0, Vn / Rmh2, mahonyR.get(0,1), mahonyR.get(1,1), mahonyR.get(2,1), 0, 0, 0},
@@ -120,7 +120,10 @@ public class Kalman_GPS_INS {
         Matrix P = A.times(PP).times(A.transpose()).plus(B.times(Q).times(B.transpose()));
 //        P.print(3,7);
         Matrix Y = H.times(P).times(H.transpose()).plus(R);
+//        System.out.println("Y = ");
 //        Y.print(3,7);
+//        System.out.println("Y.Inv = ");
+//        Y.inverse().print(3,7);
         Matrix K = P.times(H.transpose()).times(Y.inverse());
 //        K.print(3,7);
         PP = (eye15.minus(K.times(H))).times(P);
@@ -131,6 +134,8 @@ public class Kalman_GPS_INS {
         X = X.plus(K.times(W));
 //        XX.print(3,7);
         XX = X;
+        System.out.println("XX = ");
+        XX.transpose().print(3,7);
         return XX;
     }
 
