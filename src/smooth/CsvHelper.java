@@ -10,13 +10,13 @@ public class CsvHelper {
     BufferedReader br;
     BufferedWriter smoothWriter;
     OutputStreamWriter outputStreamWriter;
-    int cnt=0;
-    static final String DIR = "C:\\Users\\lukcy\\Desktop\\惯导测试数据\\0928跑车\\";
-    static final String inputFilename= "9.28跑车输入.csv";
-    static final String outputFilename="9.28跑车仿真输出.csv";
-//    static final String DIR = "C:\\Users\\lukcy\\Desktop\\惯导测试数据\\0828跑车\\";
-//    static final String inputFilename= "8.28滑动滤波输入.csv";
-//    static final String outputFilename="8.28滑动滤波输出.csv";
+
+//    static final String DIR = "D:\\北斗M1跑车测试数据\\";
+//    static final String inputFilename= "走路输入.csv";
+//    static final String outputFilename="走路输出.csv";
+    static final String DIR = "C:\\Users\\lukcy\\Desktop\\惯导测试数据\\0828跑车\\";
+    static final String inputFilename= "8.28滑动滤波输入.csv";
+    static final String outputFilename="8.28滑动滤波输出.csv";
     public ArrayList<double[]> read(int n){
         ArrayList<double[]> data = new ArrayList<double[]>();
         try{
@@ -45,7 +45,7 @@ public class CsvHelper {
         try{
             smoothWriter.write(output);
             smoothWriter.flush();
-            System.out.println(cnt+++"writing");
+
         }catch (IOException e){
             e.printStackTrace();
         }
