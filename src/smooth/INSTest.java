@@ -14,6 +14,9 @@ import java.util.Arrays;
 public class INSTest {
 
     //------------------------郎朗转弯代码变量----------------------------------------//
+    static double[] stepP = new double[3];
+    static double[] gyoP = new double[3];
+    static double[] magP = new double[3];
     static double[] lastAv = new double[3];
     static boolean initAngle = false;
     static ArrayList<Double> initGyrMagList = new ArrayList<Double>();
@@ -50,9 +53,9 @@ public class INSTest {
 //        {0.1, 0.5, 0.4}
     };
     private static long[] countMethod = new long[5];
-    public final static boolean calibrateGyr = false;
+    public final static boolean calibrateGyr = true;
     private static int calibrateGyrStepCount;
-    public final static boolean checkMag = false;
+    public final static boolean checkMag = true;
     public final static double viewWidth = 960;
     public final static double midAccHeight = 120, midGyrHeight = 120, midMagHeight = 120, midPathHeight = 240;
 
@@ -164,7 +167,10 @@ public class INSTest {
         csvHelper.write("smoothAx" + "," + "smoothAy" + "," + "smoothAz" + "," +
                 "smoothGx" + "," + "smoothGy" + "," + "smoothGz" + "," +
                 "smoothMx" + "," + "smoothMy" + "," + "smoothMz" + "," +
-                "smoothGPSYaw" + "," + "smoothGPSv" + "," + "GPSVe" + "," + "GPSVn" + "," + "Px" + "," + "Py" + "," + "slideYaw" + "," + "mahanyYaw,jyYaw" + "," + "hx" + "," + "hy" + "," + "hAx,hAy,hVx,hVy,hSx,hSy,hSx2,hSxy2" + "\n");
+                "smoothGPSYaw" + "," + "smoothGPSv" + "," + "GPSVe" + "," + "GPSVn" + "," + "mahonyRoll" + "," + "mahonyPitch" + "," + "mahonyYaw"
+                + "," + "VccqX,VccqY,VccqZ" + "," + "Vx,Vy,Vz" + "," + "E,L,h,Px,Py" + "," +
+                "gyoOrientation,uncalGyoOrientation,magOrientation,setpOrientation" + "," +
+                "stepPx,stepPy,gyoPx , gyoPy ,magPx , magPy" + "\n");
         ArrayList<double[]> input = csvHelper.read(20);
         System.out.println(input.size());
         double[] data = new double[20];
@@ -298,12 +304,19 @@ public class INSTest {
             //转置得到Cbn
             mahonyR.transpose();
 
-            //调用朗朗转弯方法
-            double[] resultOrientation = TurnningTest(gx,gy,gz,mx,my,mz);
+            //测试朗朗转弯方法-------------------------------------------------------------------------------------------
+            double[] resultOrientation = TurnningTest(gx, gy, gz, mx, my, mz);
+            stepP[0] += Math.sin(resultOrientation[3] * 3.1415926 / 180);
+            stepP[1] += Math.cos(resultOrientation[3] * 3.1415926 / 180);
+            gyoP[0] += Math.sin(resultOrientation[0] * 3.1415926 / 180);
+            gyoP[1] += Math.cos(resultOrientation[0] * 3.1415926 / 180);
+            magP[0] += Math.sin(resultOrientation[2] * 3.1415926 / 180);
+            magP[1] += Math.cos(resultOrientation[2] * 3.1415926 / 180);
 
             //测试单步长匀速路径
             Px += Math.cos(Yaw * 3.1415926 / 180);
             Py += Math.sin(Yaw * 3.1415926 / 180);
+            //------------------------------------------end---------------------------------------------------------------
 
             //计算更新的子午曲率半径Rm和卯酉曲率半径Rn以及曲率平均半径R0
             Rm = earthRe * (1 - 2 * earthf + 3 * earthf * Math.sin(last_L) * Math.sin(last_L));
@@ -316,6 +329,10 @@ public class INSTest {
             Vccq[0] = -Fn.get(0, 0);
             Vccq[1] = Fn.get(1, 0);
             Vccq[2] = Fn.get(2, 0) + G0;
+
+            //用转弯策略测试航位推算算法，取y轴加速度为汽车前进加速度进行航向分解
+            Vccq[0] = ay * G0 * Math.sin(resultOrientation[3] * 3.1415926 / 180);
+            Vccq[1] = ay * G0 * Math.cos(resultOrientation[3] * 3.1415926 / 180);
 
             pVx += (Vccq[0]) * 0.2;
             pVy += (Vccq[1]) * 0.2;
@@ -339,16 +356,17 @@ public class INSTest {
             lastGPSh = GPSHeight;
 
 //---------------------------------------------------------融合------------------------------
-            tao += 0.2;
-            double[][] Dpv = {{L * rad2deg - GPSLattitude}, {E * rad2deg - GPSLongitude}, {h - GPSHeight}, {pVx - GPSVe}, {pVy - GPSVn}, {pVz - GPSVu}};
-            Matrix XX = kalman_gps_ins.kalman_GPS_INS_pv(Dpv, pVx, pVy, pVz, last_L, last_h, mahonyR, Fn, tao, Rm, Rn);
-            pVx = pVx - XX.get(3, 0);
-            pVy = pVy - XX.get(4, 0);
-            pVz = pVz - XX.get(5, 0);
-            L = L - 0.29 * XX.get(6, 0);
-            E = E - 0.32 * XX.get(7, 0);
-            h = h - XX.get(8, 0);
-
+            if (GPS_SN >= 4) {
+                tao += 0.2;
+                double[][] Dpv = {{L * rad2deg - GPSLattitude}, {E * rad2deg - GPSLongitude}, {h - GPSHeight}, {pVx - GPSVe}, {pVy - GPSVn}, {pVz - GPSVu}};
+                Matrix XX = kalman_gps_ins.kalman_GPS_INS_pv(Dpv, pVx, pVy, pVz, last_L, last_h, mahonyR, Fn, tao, Rm, Rn);
+                pVx = pVx - XX.get(3, 0);
+                pVy = pVy - XX.get(4, 0);
+                pVz = pVz - XX.get(5, 0);
+                L = L - 0.29 * XX.get(6, 0);
+                E = E - 0.32 * XX.get(7, 0);
+                h = h - XX.get(8, 0);
+            }
 
             csvHelper.write(smoothAx + "," + smoothAy + "," + smoothAz + "," +
                     smoothGx + "," + smoothGy + "," + smoothGz + "," +
@@ -357,8 +375,9 @@ public class INSTest {
                     Roll + "," + Pitch + "," + Yaw + "," +
                     Vccq[0] + "," + Vccq[1] + "," + Vccq[2] + "," +
                     pVx + "," + pVy + "," + pVz + "," +
-                    E * rad2deg + "," + L * rad2deg + "," + h + "," + Px + "," + Py + ","  +
-                    resultOrientation[0] + ","  + resultOrientation[1] + ","  + resultOrientation[2] + ","  + resultOrientation[3] + "\n");
+                    E * rad2deg + "," + L * rad2deg + "," + h + "," + Px + "," + Py + "," +
+                    resultOrientation[0] + "," + resultOrientation[1] + "," + resultOrientation[2] + "," + resultOrientation[3] +
+                    "," + stepP[0] + "," + stepP[1] + "," + gyoP[0] + "," + gyoP[1] + "," + magP[0] + "," + magP[1] + "\n");
 
             smoothAx = 0;
             smoothAy = 0;
@@ -461,9 +480,9 @@ public class INSTest {
         return Qresult;
     }
 
-    public static double[] TurnningTest(double gyoX,double gyoY,double gyoZ,double magX,double magY,double magZ){
+    public static double[] TurnningTest(double gyoX, double gyoY, double gyoZ, double magX, double magY, double magZ) {
         double[] resultOrientation = new double[4];
-        double[] gyoTemp = {gyoX , gyoY , gyoZ};
+        double[] gyoTemp = {gyoX, gyoY, gyoZ};
         double magOrientation;
         double magNorm = Math.sqrt((float) (magX * magX + magY * magY));
         if (magY > 0) {
@@ -585,8 +604,10 @@ public class INSTest {
         }
 
         if (calibrateGyr) {
-            double calibrateMagOri = 720; int magFlag = 0;
-            double calibrateStepOri = 720; int stepFlag = 0;
+            double calibrateMagOri = 720;
+            int magFlag = 0;
+            double calibrateStepOri = 720;
+            int stepFlag = 0;
             double stepDiff = Math.abs(lastStepOrientation - stepOrientation);
             if (stepDiff > 180) stepDiff = 360 - stepDiff;
             if (lastStepOrientation != 720 && stepDiff < 5) {
@@ -643,7 +664,7 @@ public class INSTest {
         lastStepOrientation = stepOrientation;
         lastThetaC = thetaC;
 
-        resultOrientation[0]= gyrOrientation;
+        resultOrientation[0] = gyrOrientation;
         resultOrientation[1] = uncalibratedGyrOrientation;
         resultOrientation[2] = magOrientation;
         resultOrientation[3] = stepOrientation;

@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6f29282b-ba39-401a-b39e-cc4970bd2a35" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/smooth/CsvHelper.java" afterPath="$PROJECT_DIR$/src/smooth/CsvHelper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/smooth/INSTest.java" afterPath="$PROJECT_DIR$/src/smooth/INSTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java" afterPath="$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java" />
     </list>
     <ignored path="GPS_INS2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,14 +45,14 @@
       <file leaf-file-name="INSTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/smooth/INSTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-190">
-              <caret line="648" column="47" lean-forward="true" selection-start-line="648" selection-start-column="47" selection-end-line="648" selection-end-column="47" />
+            <state relative-caret-position="818">
+              <caret line="316" column="50" lean-forward="true" selection-start-line="316" selection-start-column="50" selection-end-line="316" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#457#465#0" expanded="true" />
-                <element signature="e#26212#26220#0" expanded="true" />
-                <element signature="e#27988#27996#0" expanded="true" />
-                <element signature="e#28058#28066#0" expanded="true" />
+                <element signature="e#584#592#0" expanded="true" />
+                <element signature="e#27599#27607#0" expanded="true" />
+                <element signature="e#29376#29384#0" expanded="true" />
+                <element signature="e#29446#29454#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -63,8 +61,8 @@
       <file leaf-file-name="MahonyAHRS.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tools/MahonyAHRS.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="900">
-              <caret line="121" column="59" lean-forward="true" selection-start-line="121" selection-start-column="59" selection-end-line="121" selection-end-column="59" />
+            <state relative-caret-position="3025">
+              <caret line="121" column="59" lean-forward="false" selection-start-line="121" selection-start-column="59" selection-end-line="121" selection-end-column="59" />
               <folding />
             </state>
           </provider>
@@ -73,7 +71,7 @@
       <file leaf-file-name="Kalman_GPS_INS.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1942">
+            <state relative-caret-position="1000">
               <caret line="43" column="20" lean-forward="false" selection-start-line="43" selection-start-column="20" selection-end-line="43" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -85,8 +83,8 @@
       <file leaf-file-name="CsvHelper.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/smooth/CsvHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="17" column="56" lean-forward="true" selection-start-line="17" selection-start-column="56" selection-end-line="17" selection-end-column="56" />
+            <state relative-caret-position="400">
+              <caret line="17" column="56" lean-forward="false" selection-start-line="17" selection-start-column="56" selection-end-line="17" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -180,7 +178,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -245,8 +242,9 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -756,7 +754,8 @@
       <workItem from="1509091907045" duration="3218000" />
       <workItem from="1509355081858" duration="3287000" />
       <workItem from="1509418867479" duration="6979000" />
-      <workItem from="1509593517051" duration="10971000" />
+      <workItem from="1509593517051" duration="11017000" />
+      <workItem from="1509671963651" duration="6524000" />
     </task>
     <task id="LOCAL-00001" summary="滑动滤波1.0">
       <created>1500256610085</created>
@@ -828,15 +827,21 @@
       <option name="project" value="LOCAL" />
       <updated>1508234446703</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="转弯策略11.2">
+      <created>1509618756784</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1509618756784</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="260325000" />
+    <option name="totallyTimeSpent" value="266895000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -847,13 +852,13 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.159436" sideWeight="0.5063966" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.49515906" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329718" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1735358" sideWeight="0.4936034" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329718" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21908894" sideWeight="0.4936034" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17270789" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23560767" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.49515906" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.48962656" order="1" side_tool="false" content_ui="tabs" />
@@ -905,7 +910,8 @@
     <MESSAGE value="滑动滤波9.18" />
     <MESSAGE value="滑动滤波9.20" />
     <MESSAGE value="滑动滤波9.21" />
-    <option name="LAST_COMMIT_MESSAGE" value="滑动滤波9.21" />
+    <MESSAGE value="转弯策略11.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="转弯策略11.2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -915,12 +921,6 @@
           <line>180</line>
           <properties />
           <option name="timeStamp" value="62" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/smooth/INSTest.java</url>
-          <line>343</line>
-          <properties />
-          <option name="timeStamp" value="115" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -1299,7 +1299,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tools/Kalman_GPS_INS.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1942">
+        <state relative-caret-position="1000">
           <caret line="43" column="20" lean-forward="false" selection-start-line="43" selection-start-column="20" selection-end-line="43" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1309,30 +1309,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tools/MahonyAHRS.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="121" column="59" lean-forward="true" selection-start-line="121" selection-start-column="59" selection-end-line="121" selection-end-column="59" />
+        <state relative-caret-position="3025">
+          <caret line="121" column="59" lean-forward="false" selection-start-line="121" selection-start-column="59" selection-end-line="121" selection-end-column="59" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/smooth/CsvHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="17" column="56" lean-forward="true" selection-start-line="17" selection-start-column="56" selection-end-line="17" selection-end-column="56" />
+        <state relative-caret-position="400">
+          <caret line="17" column="56" lean-forward="false" selection-start-line="17" selection-start-column="56" selection-end-line="17" selection-end-column="56" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/smooth/INSTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-190">
-          <caret line="648" column="47" lean-forward="true" selection-start-line="648" selection-start-column="47" selection-end-line="648" selection-end-column="47" />
+        <state relative-caret-position="818">
+          <caret line="316" column="50" lean-forward="true" selection-start-line="316" selection-start-column="50" selection-end-line="316" selection-end-column="50" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#457#465#0" expanded="true" />
-            <element signature="e#26212#26220#0" expanded="true" />
-            <element signature="e#27988#27996#0" expanded="true" />
-            <element signature="e#28058#28066#0" expanded="true" />
+            <element signature="e#584#592#0" expanded="true" />
+            <element signature="e#27599#27607#0" expanded="true" />
+            <element signature="e#29376#29384#0" expanded="true" />
+            <element signature="e#29446#29454#0" expanded="true" />
           </folding>
         </state>
       </provider>
