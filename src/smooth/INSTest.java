@@ -245,8 +245,8 @@ public class INSTest {
             gx = data[3];
             gy = data[4];
             gz = data[5];
-            mx = -data[6];
-            my = -data[7];
+            mx = data[6];
+            my = data[7];
             mz = -data[8];
             jyYaw = data[13];
             GPSLongitude = data[14];
@@ -306,6 +306,7 @@ public class INSTest {
 
             //测试朗朗转弯方法-------------------------------------------------------------------------------------------
             double[] resultOrientation = TurnningTest(gx, gy, gz, mx, my, mz);
+            resultOrientation[2] = 90 - resultOrientation[2];
             stepP[0] += Math.sin(resultOrientation[3] * 3.1415926 / 180);
             stepP[1] += Math.cos(resultOrientation[3] * 3.1415926 / 180);
             gyoP[0] += Math.sin(resultOrientation[0] * 3.1415926 / 180);
